@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
+	"time"
 
 	"github.com/ankush263/expense-tracker/internal/model"
 	"github.com/ankush263/expense-tracker/utils"
@@ -35,3 +37,87 @@ func GetAllExpenses() []model.ExpenseTracker {
 
 	return expenses
 }
+
+func SaveExpenses(expenses []model.ExpenseTracker) error {
+	data, err := json.MarshalIndent(expenses, "", " ")
+	utils.CheckNilError(err)
+
+	return os.WriteFile(filepath, data, 0644)
+}
+
+func AddToExpanses(description string, amount int) model.ExpenseTracker {
+	expenses := LoadExpenses()
+
+	var newId int = 1
+	if len(expenses) > 0 {
+		newId = expenses[len(expenses) - 1].ID + 1
+	}
+
+	newExpense := model.ExpenseTracker{
+		ID: newId,
+		CreatedAt: time.Now(),
+		Description: description,
+		Amount: amount,
+	}
+
+	expenses = append(expenses, newExpense)
+
+	err := SaveExpenses(expenses)
+	utils.CheckNilError(err)
+
+	return  newExpense
+}
+
+func GetExpenseById(id int) model.ExpenseTracker {
+	expense := LoadExpenses()
+
+	if len(expense) == 0 {
+		return model.ExpenseTracker{}
+	}
+
+	for _, exp := range(expense) {
+		if exp.ID == id {
+			return exp
+		}
+	}
+
+	return model.ExpenseTracker{}
+}
+
+func GetTotalExpanse() int {
+	expenses := LoadExpenses()
+
+	if len(expenses) == 0 {
+		return 0
+	}
+
+	var total int = 0
+
+	for _, expense := range(expenses) {
+		total += expense.Amount
+	}
+
+	return total
+}
+
+func UpdateExpanseDescription(id int, description string) (model.ExpenseTracker, error) {
+	expenses := LoadExpenses()
+
+	if len(expenses) == 0 {
+		return model.ExpenseTracker{}, errors.New("No expenses found")
+	}
+
+	for i, expense := range(expenses) {
+		if expense.ID == id {
+			expenses[i].Description = description
+
+			err := SaveExpenses(expenses)
+			utils.CheckNilError(err)
+
+			return expenses[i], nil
+		}
+	}
+
+	return model.ExpenseTracker{}, errors.New("Failed to update expense")
+}
+
