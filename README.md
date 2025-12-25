@@ -1,5 +1,7 @@
 # 💸 Expense Tracker CLI
 
+## This project is inspired by the **Expense Tracker challenge on roadmap.sh** [Link](https://roadmap.sh/projects/expense-tracker)
+
 A simple, fast, and minimal **command-line expense tracker** to manage daily expenses directly from your terminal.
 
 This tool helps you record, update, delete, and summarize expenses without any external dependencies or databases. All data is stored locally, keeping things lightweight and transparent.
