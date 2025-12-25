@@ -121,3 +121,29 @@ func UpdateExpanseDescription(id int, description string) (model.ExpenseTracker,
 	return model.ExpenseTracker{}, errors.New("Failed to update expense")
 }
 
+func UpdateExpense(id int, description *string, amount *int) (model.ExpenseTracker, error) {
+	expenses := LoadExpenses()
+
+	if len(expenses) == 0 {
+		return model.ExpenseTracker{}, errors.New("No expenses found")
+	}
+
+	for i, expense := range(expenses) {
+		if expense.ID == id {
+			if description != nil {
+				expenses[i].Description = *description
+			}
+
+			if amount != nil {
+				expenses[i].Amount = *amount
+			}
+
+			err := SaveExpenses(expenses)
+			utils.CheckNilError(err)
+
+			return expenses[i], nil
+		}
+	}
+
+	return model.ExpenseTracker{}, errors.New("Failed to update expense amount")
+}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/ankush263/expense-tracker/internal/controllers"
 	"github.com/ankush263/expense-tracker/utils"
@@ -43,6 +44,8 @@ func main() {
 		return
 	}
 
+	fmt.Println("args: ", args)
+
 	switch(args[0]) {
 	case "list":
 		if len(args) > 1 {
@@ -54,6 +57,43 @@ func main() {
 		utils.CheckNilError(err)
 		fmt.Println(string(structureData))
 		return
+
+	case "add":
+		if len(args) < 2 || len(args) > 5 {
+			fmt.Println("Usage: expense-tracket-cli add --description 'Lunch' --amount 20")
+			return
+		}
+
+		var description string
+		var amount int
+		
+		switch(args[1]) {
+		case "--description":
+			description = args[2]
+
+		case "--amount":
+			intamount, err := strconv.Atoi(args[2])
+			amount = intamount
+			utils.CheckNilError(err)
+		}
+
+		switch(args[3]) {
+		case "--description":
+			description = args[4]
+
+		case "--amount":
+			intamount, err := strconv.Atoi(args[4])
+			amount = intamount
+			utils.CheckNilError(err)
+		}
+
+		newExpense := controllers.AddToExpanses(description, amount)
+
+		data, err := json.MarshalIndent(newExpense, "", " ")
+		utils.CheckNilError(err)
+
+		fmt.Println(string(data))
+		return 
 	}
 	
 }

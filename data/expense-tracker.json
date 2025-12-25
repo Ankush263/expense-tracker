@@ -1,8 +1,20 @@
 [
-    {
-        "ID": 1,
-        "CreatedAt": "2024-12-22T14:30:00Z",
-        "Description": "test",
-        "Amount": 20
-    }
+ {
+  "id": 1,
+  "createdAt": "2024-12-22T14:30:00Z",
+  "description": "test",
+  "amount": 20
+ },
+ {
+  "id": 2,
+  "createdAt": "2025-12-25T13:27:11.619018226+05:30",
+  "description": "Lunch",
+  "amount": 20
+ },
+ {
+  "id": 3,
+  "createdAt": "2025-12-25T13:27:57.633156348+05:30",
+  "description": "Dinner",
+  "amount": 30
+ }
 ]
