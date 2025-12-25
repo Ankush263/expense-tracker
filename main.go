@@ -94,14 +94,36 @@ func main() {
 		return 
 
 	case "summary":
-		if len(args) > 1 {
-			fmt.Println("Usage: expense-tracket-cli summary")
+		if len(args) > 3 {
+			fmt.Println("Usage: expense-tracket-cli summary or Usage: expense-tracket-cli summary --month 2")
 			return
 		}
 
-		totalExpanse := controllers.GetTotalExpanse()
+		var totalExpanse int
+
+		if len(args) == 1 {
+			totalExpanse = controllers.GetTotalExpanse(nil)
+		} else {
+			month, err := strconv.Atoi(args[2])
+			utils.CheckNilError(err)
+			totalExpanse = controllers.GetTotalExpanse(&month)
+		}
 
 		fmt.Println("$", totalExpanse)
+		return
+
+	case "delete":
+		if len(args) != 3 {
+			fmt.Println("Usage: expense-tracker-cli delete --id 2")
+			return
+		}
+
+		id, err := strconv.Atoi(args[2])
+		utils.CheckNilError(err)
+
+		err = controllers.DeleteExpense(id)
+		utils.CheckNilError(err)
+		fmt.Println("Expense deleted successfully")
 		return
 	}
 }

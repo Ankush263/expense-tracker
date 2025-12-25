@@ -84,7 +84,7 @@ func GetExpenseById(id int) model.ExpenseTracker {
 	return model.ExpenseTracker{}
 }
 
-func GetTotalExpanse() int {
+func GetTotalExpanse(month *int) int {
 	expenses := LoadExpenses()
 
 	if len(expenses) == 0 {
@@ -93,8 +93,16 @@ func GetTotalExpanse() int {
 
 	var total int = 0
 
-	for _, expense := range(expenses) {
-		total += expense.Amount
+	if (month == nil) {
+		for _, expense := range(expenses) {
+			total += expense.Amount
+		}
+	} else {
+		for _, expense := range(expenses) {
+			if int(expense.CreatedAt.Month()) == *month {
+				total += expense.Amount
+			}
+		}
 	}
 
 	return total
@@ -146,4 +154,25 @@ func UpdateExpense(id int, description *string, amount *int) (model.ExpenseTrack
 	}
 
 	return model.ExpenseTracker{}, errors.New("Failed to update expense amount")
+}
+
+func DeleteExpense(id int) error {
+	expenses := LoadExpenses()
+
+	if len(expenses) == 0 {
+		return errors.New("Expenses are empty")
+	}
+
+	for i, expense := range(expenses) {
+		if expense.ID == id {
+			expenses = append(expenses[:i], expenses[i+1:]...)
+
+			err := SaveExpenses(expenses)
+			utils.CheckNilError(err)
+			return nil
+		}
+
+	}
+
+	return errors.New("Expense deletion failed")
 }
