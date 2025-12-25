@@ -44,8 +44,6 @@ func main() {
 		return
 	}
 
-	fmt.Println("args: ", args)
-
 	switch(args[0]) {
 	case "list":
 		if len(args) > 1 {
@@ -94,6 +92,16 @@ func main() {
 
 		fmt.Println(string(data))
 		return 
+
+	case "summary":
+		if len(args) > 1 {
+			fmt.Println("Usage: expense-tracket-cli summary")
+			return
+		}
+
+		totalExpanse := controllers.GetTotalExpanse()
+
+		fmt.Println("$", totalExpanse)
+		return
 	}
-	
 }
